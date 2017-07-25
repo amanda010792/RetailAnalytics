@@ -1,9 +1,9 @@
 -- Cleanup HDFS directory
-rmf /user/admin/retail/retailsalesclean
-rmf /user/admin/retail/georevenue
+rmf /user/root/retail/retailsalesclean
+rmf /user/root/retail/georevenue
 
 -- Loading raw data
-InputFile = LOAD '/user/admin/retail/retailsalesraw/OnlineRetail.txt' using PigStorage('\t') 
+InputFile = LOAD '/user/root/retail/retailsalesraw/OnlineRetail.txt' using PigStorage('\t') 
 				 as (	InvoiceNo: int,
                  			StockCode: chararray,
                         		Description: chararray,
@@ -24,7 +24,7 @@ RetailSalesClean = FOREACH RetailSalesRaw GENERATE 	InvoiceNo,
                                                     	CustomerID,
                                                     	Country;
 -- Storing Cleansed File                                                    
-STORE RetailSalesClean into '/user/admin/retail/retailsalesclean' using PigStorage ('\t');
+STORE RetailSalesClean into '/user/root/retail/retailsalesclean' using PigStorage ('\t');
 
 -- Generate Overall Sales Aggregate and Sales for top 10 countries
 GeoGroup = group RetailSalesClean by Country;
@@ -32,4 +32,4 @@ GeoRevenue  = foreach GeoGroup generate group, ROUND(SUM(RetailSalesClean.TotalP
 GeoRevenueDesc = ORDER GeoRevenue BY TotalRevenueByCountry DESC;
 Top10GeoRevenue = LIMIT GeoRevenueDesc 10;
 
-STORE Top10GeoRevenue into '/user/admin/retail/georevenue' using PigStorage ('\t');
+STORE Top10GeoRevenue into '/user/root/retail/georevenue' using PigStorage ('\t');

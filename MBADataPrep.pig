@@ -1,8 +1,8 @@
 --Clean-up HDFS
-rmf /user/admin/retail/marketbaskets
+rmf /user/root/retail/marketbaskets
 
 -- Loading raw data
-InputFile = LOAD '/user/admin/retail/retailsalesraw/OnlineRetail.txt' using PigStorage('\t') 
+InputFile = LOAD '/user/root/retail/retailsalesraw/OnlineRetail.txt' using PigStorage('\t') 
 				 as (	InvoiceNo: int,
               				StockCode: chararray,
               				Description: chararray,
@@ -28,4 +28,4 @@ BasketsGroupR3 = FILTER BasketsGroupR2 BY SIZE(Bkt) > 1 AND SIZE(Bkt) < 10;
 MarketBaskets = FOREACH BasketsGroupR3 GENERATE FLATTEN(BagToTuple(Bkt.StockCat));
 
 -- Storing Market Baskets                                                    
-STORE MarketBaskets into '/user/admin/retail/marketbaskets' using PigStorage (',');
+STORE MarketBaskets into '/user/root/retail/marketbaskets' using PigStorage (',');
